@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: 2024 Ledger SAS
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence.
+*   @fvalette-ledger @pthierry-ledger
+
+# the meson build system
+meson.* @fvalette-ledger

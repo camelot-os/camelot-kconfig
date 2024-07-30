@@ -1,0 +1,3 @@
+{% for flag in flags.split(' ') -%}
+--cfg={{ flag.strip() }}
+{% endfor -%}
