@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright 2024 Ledger SAS
+
+[package]
+name = "outpost_kconfig_test_package"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+outpost_kconfig = { path = "../.." }
+
+[build-dependencies]
+outpost_kconfig = { path = "../.." }
