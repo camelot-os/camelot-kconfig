@@ -78,10 +78,9 @@ pub fn import_dotconfig_from_script() {
 macro_rules! _get {
     ($value:ident) => {$value};
     ($value:ident, $value_type:ty) => {
-        if $value.starts_with("0x") {
-            <$value_type>::from_str_radix($value.trim_start_matches(&"0x"), 16).unwrap()
-        } else {
-            <$value_type>::from_str_radix($value, 10).unwrap()
+        match <$value_type>::from_str_radix($value, 10) {
+            Ok(v) => v,
+            Err(e) => panic!("kconfig conversion error"),
         }
     };
 }
@@ -89,9 +88,10 @@ macro_rules! _get {
 #[macro_export]
 macro_rules! get {
     ($name:expr $(, $value_type:ty)?) => {{
-        const value_str: Option<&str> = option_env!($name);
-        const { assert!(value_str.is_some()) }
-        let value = value_str.unwrap();
+        const value: &str = match option_env!($name) {
+            Some(v) => v,
+            None => panic!("kconfig entry not found !"),
+        };
 
         use $crate::_get;
         _get!(value $(, $value_type)?)
