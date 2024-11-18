@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: Apache-2.0
+#
+# Copyright 2024 Ledger SAS
+
+[package]
+name = "kconfig_import"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
