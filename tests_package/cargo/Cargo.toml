@@ -8,7 +8,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-outpost_kconfig = { path = "../.." }
+kconfig = { path = "../../rust/kconfig" }
 
 [build-dependencies]
-outpost_kconfig = { path = "../.." }
+kconfig_import = { path = "../../rust/kconfig_import" }
