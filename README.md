@@ -4,6 +4,17 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 # Outpost-Kconfig
+
+`Outpost-Kconfig` provides build system recipes for Meson and Cargo that handles `kconfig` and/or `.config` file.
+The aim is to ease `kconfig` usage across different languages and build systems.
+
+## Table of Contents
+1. [Meson Build System](#meson-build-system)
+2. [Cargo](#cargo)
+3. [License](#license)
+
+# Meson Build system
+
 Meson Buildsystem recipe collection that handles `Kconfig` and `.config` files.
 
 This meson project can be used as a sub-project for every meson based project which uses `Kconfig` as configuration system. The top level `Kconfig` is parsed at configure time (i.e. during meson setup), the `config` file is checked and a build specific `.config` file is generated using `oldconfig` policy for missing `Kconfig` entry.
@@ -54,6 +65,82 @@ The following variables can be use by top level project to use `Kconfig` feature
 This project uses kconfiglib python package as Kconfig frontend. One could install it with the following:
 ```console
 pip3 install --user kconfiglib
+```
+
+# Cargo
+
+For Cargo build system, there is no handling of Kconfig itself nor any graphical frontend.
+We assumed that the `.config` file is well-formed.
+
+As a pre requisite, we stated that kconfig entries must be build time evaluated in order to
+fail as soon as possible, and especially, not at runtime. Moreover, no external crates and
+no dead code are mandatory requirements too.
+
+Thus, 2 crates are needed:
+ - kconfig_import: import and parse `.config` from a build script, i.e. `build.rs`.
+ - kconfig: provide helper getter macro
+
+ ## crate kconfig_import
+
+This crate allows user to import a `.config` file, the file path is given through an environment
+variable `config` in order to stay coherent w/ meson option.
+
+Blank lines and comments are trimmed and then, each kconfig entry is pushed in cargo config as boolean.
+This allows users to use conditional compile with `#[cfg]` attribute or `cfg!` macro using only
+the config entry name, i.e. means that the config is defined, whatever is type or value.
+
+Entries w/ a specific value (i.e. `int`, `hex` and `string`) are pushed to the cargo environment.
+Due to some const limitation on string view manipulation, `hex` are converted to decimal integer at
+build time and an extra entry w/ `_HEX_STR` suffix is added, holding the original hexadecimal value
+(w/ `0x` prefix) as string.
+
+## crate kconfig
+
+This crate provide macro helper in order to get value (and converted to the right type) from Rust code
+**at build time**. As all environment variables are text, the `get!` macro takes a required parameter
+that is the config entry name and an optional parameter that is the integer type in which user wants
+to convert config entry. If no optional parameter, the raw string is accessed.
+
+At build time, if the config entry does not exist, compiling process will panic.
+At build time, if the string to integer conversion fails, compiling process will panic.
+
+For boolean value, rust `#[cfg]` and `cfg!` can be used.
+
+## usage
+
+Cargo.toml
+```toml
+[dependencies]
+kconfig
+
+[build-dependencies]
+kconfig_import
+```
+
+build.rs
+```rust
+fn main() {
+    kconfig_import::import_dotconfig_from_script();
+}
+```
+
+any.rs
+```rust
+use kconfig:
+
+[...]
+
+// conditional function compilation
+#[cfg(CONFIG_EXTRA_UBER_FEATURE)]
+fn my_extra_uber_function(...) {
+    [...]
+}
+
+// u16 array size from KConfig `.config` file
+const SOME_ARRAY_SIZE: u16 = kconfig::get!("CONFIG_SOME_ARRAY_SIZE", u16);
+
+// string from KConfig `.config` file
+const MOTD_BANNER: &str = kconfig::get!("CONFIG_MOTD");
 ```
 
 # LICENSE
