@@ -17,7 +17,7 @@
 
 project(
     'kconfig',
-    meson_version: '>=1.3.0',
+    meson_version: '>=1.4.0',
     version : run_command('support/meson/version.sh', 'get-vcs', check: true).stdout().strip(),
     license_files: ['LICENSES/Apache-2.0.txt'],
 )

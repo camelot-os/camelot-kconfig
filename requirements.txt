@@ -3,6 +3,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-meson
+meson >= 1.4.0
 kconfiglib >= 14.1.0
 jinja-cli >= 1.2.2
