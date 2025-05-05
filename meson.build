@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Copyright 2023 - 2024 Ledger SAS
+# Copyright 2025 H2Lab
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,11 +18,11 @@
 project(
     'kconfig',
     meson_version: '>=1.3.0',
-    version: run_command('dunamai', 'from', 'git', '--style', 'semver', '--dirty', check: true)
-             .stdout().strip(),
-    license: 'Apache-2.0',
+    version : run_command('support/meson/version.sh', 'get-vcs', check: true).stdout().strip(),
     license_files: ['LICENSES/Apache-2.0.txt'],
 )
+
+meson.add_dist_script('support/meson/version.sh', 'set-dist', meson.project_version())
 
 pymod = import('python')
 keyval = import('keyval')
