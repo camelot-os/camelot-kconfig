@@ -16,3 +16,4 @@
 
 option('kconfig', type: 'string', description: 'Top level Kconfig file', yield: true)
 option('config', type: 'string', description: 'Configuration file to use', yield: true)
+option('with_rlib', type: 'boolean', value: false, description: 'Build the kconfig Rust rlibs', yield: true)

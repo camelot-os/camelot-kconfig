@@ -184,3 +184,6 @@ run_target('savedefconfig',
     command: [savedefconfig, '--kconfig', kconfig, '--out', kconfig_savedefconfig],
     env: kconfig_env,
 )
+
+# about rust crates, to allow meson-bases usage without usint crates.io (e.g. kernel autotest or uapi case)
+subdir('rust')
