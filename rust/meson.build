@@ -20,16 +20,23 @@ if not with_rlib_opt
     subdir_done()
 endif
 
-
+# c cross-compiler needed by rust build
+add_languages('c', native: false, required: true)
 add_languages('rust', native: false, required: true)
+
+target_cpu = 'cortex-@0@'.format(kconfig_data.get_unquoted('CONFIG_ARCH_ARM_CORTEX_NAME'))
+c_compiler = meson.get_compiler('c')
+
+target_rust = kconfig_data.get_unquoted('CONFIG_RUSTC_TARGET')
+target_rustargs = [
+    '-Ctarget-cpu='+ target_cpu,
+]
+
 
 # Set rust toolchain config entry according to kconfig
 # Note:
 #   configuration_file is done at top level meson.build in order to generate
 #   rust-toolchain.toml at build root directory.
-rust_toolchain_config = configuration_data()
-rust_toolchain_config.set('channel', get_option('rust-channel'))
-rust_toolchain_config.set('target', kconfig_data.get_unquoted('CONFIG_RUSTC_TARGET'))
 rust_edition = '2024'
 kconfig_rust_std = 'rust_std=' + rust_edition
 
@@ -42,19 +49,9 @@ rust_build_args = [
 
 kconfig_rlib = static_library(
     'kconfig',
-    sources : files('kconfig' / 'lib.rs'),
+    sources : files('kconfig' / 'src' / 'lib.rs'),
     rust_abi: 'rust',
     rust_args: rust_build_args,
     override_options: [kconfig_rust_std],
-    extra_files: uapi_modules,
-    install: true,
-)
-kconfig_import_rlib = static_library(
-    'kconfig',
-    sources : files('kconfig_import' / 'lib.rs'),
-    rust_abi: 'rust',
-    rust_args: rust_build_args,
-    override_options: [kconfig_rust_std],
-    extra_files: uapi_modules,
     install: true,
 )
