@@ -14,9 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if meson.is_subproject() == false
-  subdir_done()
+with_rlib_opt = get_option('with_rlib')
+
+if not with_rlib_opt
+    subdir_done()
 endif
+
 
 add_languages('rust', native: false, required: true)
 
