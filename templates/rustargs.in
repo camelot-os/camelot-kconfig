@@ -1,3 +1,3 @@
-{% for flag in flags.split(' ') -%}
---cfg={{ flag.strip() }}
+{% for flag in flags.split(' ')|list|map('trim') -%}
+--cfg={{ flag }}
 {% endfor -%}

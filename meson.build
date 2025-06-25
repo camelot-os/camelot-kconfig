@@ -138,13 +138,24 @@ kconfig_stamp = configure_file(
 # Convert kconfig entry set to 'y' in 1/0 style boolean
 # Thus, boolean kconfig true entry will translate to `#define CONFIG_XXXX 1`
 kconfig_data = configuration_data(keyval.load(kconfig_dotconfig))
-rust_cfg_cmdline = []
-foreach k: kconfig_data.keys()
-    if kconfig_data.get(k) == 'y'
-        kconfig_data.set10(k, true)
-        rust_cfg_cmdline += ['@0@'.format(k)]
+
+kconfig_rust_cfg = []
+kconfig_rust_env = environment()
+
+foreach key: kconfig_data.keys()
+    value = kconfig_data.get_unquoted(key)
+    kconfig_rust_cfg += key
+    if value == 'y'
+        kconfig_data.set10(key, true)
     else
-        rust_cfg_cmdline += ['@0@="@1@"'.format(k, kconfig_data.get_unquoted(k))]
+        if value.startswith('0x')
+            kconfig_rust_env.set(key + '_STR_HEX', value)
+            # XXX:
+            #  need a fix in meson to handle base detection based on str prefix 0b, 0o, 0x
+            # kconfig_rust_env.set(key, value.to_int())
+        else
+            kconfig_rust_env.set(key, value)
+        endif
     endif
 endforeach
 
@@ -164,7 +175,7 @@ kconfig_json = configure_file(
 # Generates rustarg file from config_data
 kconfig_rustargs = configure_file(
     input: 'templates/rustargs.in',
-    command: [jinja_cli, '@INPUT@', '--define', 'flags', ' '.join(rust_cfg_cmdline), '-o', '@OUTPUT@'],
+    command: [jinja_cli, '@INPUT@', '--define', 'flags', ' '.join(kconfig_rust_cfg), '-o', '@OUTPUT@'],
     output: 'rustflags.ini',
 )
 
