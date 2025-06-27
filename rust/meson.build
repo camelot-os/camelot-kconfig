@@ -55,3 +55,5 @@ kconfig_rlib = static_library(
     override_options: [kconfig_rust_std],
     install: true,
 )
+
+kconfig_rust_dep = declare_dependency(link_whole : kconfig_rlib)
