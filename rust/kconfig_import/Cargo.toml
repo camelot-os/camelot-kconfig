@@ -1,9 +1,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Copyright 2024 Ledger SAS
+# Copyright 2025 ANSSI
 
 [package]
-name = "kconfig_import"
+name = "camelot_kconfig_import"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 license = "Apache-2.0"

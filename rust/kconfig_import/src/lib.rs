@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 // Copyright 2024 Ledger SAS
+// Copyright 2025 ANSSI
+
 
 use std::collections::HashMap;
 use std::env;
