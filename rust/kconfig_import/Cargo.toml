@@ -8,3 +8,10 @@ name = "camelot_kconfig_import"
 version = "0.1.0"
 edition = "2024"
 license = "Apache-2.0"
+description = "Kconfig crate for camelot operating system"
+categories = ["os", "no-std"]
+repository = "https://github.com/camelot-os/camelot-kconfig"
+exclude = [
+    "/tests",
+    "/target",
+]
