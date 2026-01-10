@@ -1,0 +1,5 @@
+mainmenu "sample Kconfig"
+
+config SAMPLE_FLAG
+	bool "sample configuration flag"
+	default y

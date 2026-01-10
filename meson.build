@@ -159,6 +159,9 @@ foreach key: kconfig_data.keys()
     endif
 endforeach
 
+# sample kconfig file, used for dist, and usefull as basic example
+install_data('support/meson/Kconfig', rename : 'Kconfig.sample')
+
 # Generates C header from config_data
 kconfig_h = configure_file(
     configuration: kconfig_data,
